@@ -1,1 +1,49 @@
-null
+{
+  "main.html": {
+    "resources": [
+      "css/main.css",
+      "images/icon.png",
+      "images/user-photo.png",
+      "images/timg.jpg",
+      "fonts/mui.ttf",
+      "js/app.js",
+      "js/mui.min.js",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "setting.html"
+    ]
+  },
+  "login.html": {
+    "resources": [
+      "js/app.js",
+      "images/backgroud_login.jpg",
+      "js/mui.min.js",
+      "css/login.css",
+      "js/login.js",
+      "css/mui.min.css",
+      "css/style.css",
+      "js/jquery-2.1.1.js",
+      "js/mui.enterfocus.js",
+      "images/sinaweibo.png",
+      "images/weixin.png",
+      "images/qq.png"
+    ],
+    "refer": [
+      "main.html"
+    ]
+  },
+  "setting.html": {
+    "resources": [
+      "libs/easymob-webim-sdk/easemob.im-1.0.5.js",
+      "libs/easymob-webim-sdk/json2.js",
+      "libs/easymob-webim-sdk/jquery-1.11.1.js",
+      "js/mui.locker.js",
+      "js/feedback.js",
+      "css/feedback-page.css",
+      "js/feedback-page.js",
+      "libs/easymob-webim-sdk/strophe-custom-2.0.0.js",
+      "js/mui.view.js"
+    ]
+  }
+}

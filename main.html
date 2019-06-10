@@ -74,14 +74,73 @@
 						</a>
 					</div>
 				</div>
+				
+				<div class="mui-card">
+					<!--页眉，放置标题-->
+					<div class="mui-card-header mui-card-media">
+						<img class="card-img" src="images/icon.png" />
+						<div class="mui-media-body">
+							标题
+							<p>发表于 日期</p>
+						</div>
+					</div>
+					<!--内容区-->
+					<div class="mui-card-content">
+						
+						<img class="content-img" src="images/timg.jpg"/>
+					
+					</div>
+					<!--页脚，放置补充信息或支持的操作-->
+					<div class="mui-card-footer">
+						<a class="footer-href-more" href="#">
+							<p>more</p>
+						</a>
+						<a class="footer-href-edit" href="#">
+							<p>edit</p>
+						</a>
+					</div>
+				</div>
+				
+				<div class="mui-card">
+					<!--页眉，放置标题-->
+					<div class="mui-card-header mui-card-media">
+						<img class="card-img" src="images/icon.png" />
+						<div class="mui-media-body">
+							标题
+							<p>发表于 日期</p>
+						</div>
+					</div>
+					<!--内容区-->
+					<div class="mui-card-content">
+						
+						<img class="content-img" src="images/timg.jpg"/>
+					
+					</div>
+					<!--页脚，放置补充信息或支持的操作-->
+					<div class="mui-card-footer">
+						<a class="footer-href-more" href="#">
+							<p>more</p>
+						</a>
+						<a class="footer-href-edit" href="#">
+							<p>edit</p>
+						</a>
+					</div>
+				</div>
 		      </div>
 		    </div>  
 		  </div>
 		</div>
 		<script>
-			document.getElementById("btn1").addEventListener("tap",function(){
-						mui('.mui-off-canvas-wrap').offCanvas().toggle();
-			});
+			window.onload = function(){
+				mui('.mui-scroll-wrapper').scroll({
+					deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+				});
+				
+				document.getElementById("btn1").addEventListener("tap",function(){
+					mui('.mui-off-canvas-wrap').offCanvas().toggle();
+				});
+			}
+			
 			(function($, doc) {
 				$.init();
 				var settings = app.getSettings();

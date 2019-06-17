@@ -5,12 +5,15 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
+		<script src="js/jquery-2.1.1.js"></script>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<script src="js/mui.min.js"></script>
-		<script src="js/app.js"></script>
 		<link rel="stylesheet" href="css/main.css" />
+		<script src="js/app.js"></script>
+		<script src="cordova.js"></script>
+		<script type="text/javascript" src="js/memory.js"></script>
 	</head>
-
+ 
 	<body>
 		<!-- 侧滑导航根容器 -->
 		<div class="mui-off-canvas-wrap mui-draggable">
@@ -34,7 +37,15 @@
 					            <span class="mui-icon mui-icon-gear"></span>设置
 					        </a>
 					    </li>
+					    <li class="mui-table-view-cell mui-media">
+					        <a id="btnLogin" href="javascript:;">
+					            <span class="mui-icon mui-icon-gear"></span>登陆
+					        </a>
+					    </li>
 					</ul>
+		        </div>
+		        <div id="all">
+		        	
 		        </div>
 		      </div>
 		    </div>
@@ -131,18 +142,6 @@
 		  </div>
 		</div>
 		<script>
-			window.onload = function(){
-				mui('.mui-scroll-wrapper').scroll({
-					deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
-				});
-				
-				document.getElementById("btn1").addEventListener("tap",function(){
-					mui('.mui-off-canvas-wrap').offCanvas().toggle();
-				});
-				
-
-			}
-			
 			(function($, doc) {
 				$.init();
 				var settings = app.getSettings();
@@ -160,22 +159,6 @@
 					});
 					//设置
 					var settingButton = doc.getElementById('setting');
-					//settingButton.style.display = settings.autoLogin ? 'block' : 'none';
-//					settingButton.addEventListener('tap', function(event) {
-//						$.openWindow({
-//							id: 'setting',
-//							show: {
-//								aniShow: 'pop-in'
-//							},
-//							styles: {
-//								popGesture: 'hide'
-//							},
-//							waiting: {
-//								autoShow: false
-//							}
-//						});
-//					});
-					 
 					//--
 					$.oldBack = mui.back;
 					var backButtonPress = 0;
@@ -197,6 +180,5 @@
 			}(mui, document));
 			
 		</script>
-	</body>
-
+</body>
 </html>

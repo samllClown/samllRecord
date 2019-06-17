@@ -4,13 +4,59 @@ window.onload = function(){
 			$(".mui-content-padded").css("margin-top",window.screen.availHeight/6+"px")
 			
 			$("#login").on("click",function(){
-				var loginObjec = mui.openWindow({
-					url:"main.html",
-					extras:{
-						name:"tom"
-					}
-				})
-			})
+				
+				userName = $("#account").val();
+				pasWord = $("#password").val();
+				
+				var customerInfo = {
+					phoneNo:userName,
+					password:pasWord
+				}
+				if(!userName) {
+    				mui.alert("用户名不能为空！");
+    				return;
+    			};
+    			if(userName.length < 3) {
+    				mui.alert("用户名至少三位！");
+    				return
+    			}
+    			if(!pasWord) {
+    				mui.alert("密码不能为空！");
+    				return;
+    			};
+    			if(pasWord.length < 5) {
+    				mui.alert("密码至少5位！");
+    				return
+    			}
+    			
+    			phoneUserLogin(customerInfo);
+    		})
+
+}
+function phoneUserLogin(customerInfo){
+	
+//	var passwordKey = RSApassword(customerInfo.password);
+//	
+//	$.ajax({
+//		type:"post",
+//		url:"http://127.0.0.1:8088/PhoneUser/phoneLogin",
+//		async:true,
+//		data:{"username":customerInfo.phoneNo,"password":passwordKey},
+//		success:function(data){
+//			console.log(data);
+//		}
+//	});
+	
+	
+	var loginObjec = mui.openWindow({
+		url:"main.html",
+		extras:{
+			name:"tom"
+		}
+	})
+			
+	
+	
 }
 			(function($, doc) {
 				$.init({

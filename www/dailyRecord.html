@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="css/mui.min.css"/>
+    <script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jquery-2.1.1.js"></script>
+    <script type="text/javascript">
+    	mui.init()
+    	$(function(){
+    		$("input").css("border","0");
+    		$("input").css("padding","0");
+    		$("input").css("border-bottom","1px solid rgba(0,0,0,0.2)");
+    		$("textarea").css("border","0");
+    		$("textarea").css("padding","0");
+    		$("textarea").css("border-bottom","1px solid rgba(0,0,0,0.2)");
+    		$("textarea").css("height","100px");
+    		$(".timeBtn").css("margin-top","-5px");
+    		$(".mui-button-row").css("text-align","left");
+    		$(".mui-button-row").css("width","100%");
+    		$(".mui-button-row").css("color","rgba(0,0,0,0.5)");
+    		var rowWidth = $(".mui-collapse-content").width();
+    		$(".timeBtn").css("width",rowWidth/2+"px");
+    	})
+    </script>
+    <style type="text/css">
+    	input{
+    		background-color: transparent;
+    		border: 0;
+    	}
+    </style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">ADD</h1>
+	</header>
+	<div class="mui-content">
+	    <ul class="mui-table-view">
+	        <li class="mui-table-view-cell mui-collapse">
+	            <a class="mui-navigate-right" href="#">WorkTimeShow</a>
+	            <div class="mui-collapse-content">
+	            	<input type="text" placeholder="The event theme" />
+	                <textarea placeholder="The event in detail"></textarea>
+	                <div class="mui-button-row">
+	                	<label class="eventTimeLaber">The event time : </label>
+	                	<button class="timeBtn" type="button" class="mui-btn mui-btn-outlined">click</button>
+	                </div>
+	            </div>
+	        </li>
+	    </ul>
+	</div>
+</body>
+</html>

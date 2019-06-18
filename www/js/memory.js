@@ -1,7 +1,6 @@
 $(function(){
 	init();
 	getUserObj();
-	
 })
 
 
@@ -21,7 +20,6 @@ function existsUser(user){
 	if(user){
 		//若缓存中有数据时 直接获取
 		var userObj = user;
-		window.localStorage.removeItem("userObj");
 	}else{
 		existsServerUser();
 	}
@@ -55,8 +53,6 @@ function existsServerUser(){
  * cordova加载完成
  */
 function onDeviceReady(){
-	alert(device.uuid);
-	
 	var userObj = {
 		userName:"name",
 		userPassword:"password",
@@ -66,15 +62,22 @@ function onDeviceReady(){
 	
 	localStorage.setItem("userObj",JSON.stringify(userObj));
 	
+	
 	$.ajax({
-		url:"http://192.168.101.8:8088/PhoneUser/phoneUserCK",
+		url:ajaxUrl.getUserCKUrl,
 		async:true,
 		data:userObj,
+		dataType:"JSON",
 		success:function(data){
-			alert(data);
+			if(data.result == "SUCCESS"){
+				console.log("用户信息添加远程数据库成功")
+			}else{
+				console.log("用户信息添加远程数据库失败")
+				console.log("失败原因"+data.log);
+			}
 		},
 		error:function(){
-			alert("发送失败");
+			console.log("添加远程数据库失败")
 		}
 	});
 
@@ -90,6 +93,12 @@ function init(){
 	document.getElementById("btn1").addEventListener("tap",function(){
 		mui('.mui-off-canvas-wrap').offCanvas().toggle();
 	});
+	document.getElementById("btn2").addEventListener("tap",function(){
+		mui.openWindow({
+			url:"dailyRecord.html",
+			
+		})
+	});
 	document.getElementById("btnLogin").addEventListener("tap",function(){
 		mui.openWindow({
 			url:"login.html",
@@ -99,3 +108,5 @@ function init(){
 		})
 	});
 }
+
+

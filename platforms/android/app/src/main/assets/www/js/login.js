@@ -35,17 +35,16 @@ window.onload = function(){
 }
 function phoneUserLogin(customerInfo){
 	
-//	var passwordKey = RSApassword(customerInfo.password);
-//	
-//	$.ajax({
-//		type:"post",
-//		url:"http://127.0.0.1:8088/PhoneUser/phoneLogin",
-//		async:true,
-//		data:{"username":customerInfo.phoneNo,"password":passwordKey},
-//		success:function(data){
-//			console.log(data);
-//		}
-//	});
+	var passwordKey = RSApassword(customerInfo.password);
+	
+	$.ajax({
+		url:ajaxUrl.getUserLoginUrl,
+		async:true,
+		data:{"username":customerInfo.phoneNo,"password":passwordKey},
+		success:function(data){
+			console.log(data);
+		}
+	});
 	
 	
 	var loginObjec = mui.openWindow({

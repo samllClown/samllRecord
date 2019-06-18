@@ -1,7 +1,6 @@
 $(function(){
 	init();
 	getUserObj();
-	
 })
 
 
@@ -21,8 +20,9 @@ function existsUser(user){
 	if(user){
 		//若缓存中有数据时 直接获取
 		var userObj = user;
-		window.localStorage.removeItem("userObj");
+		alert("缓存中有用户数据")
 	}else{
+		alert("缓存中无用户数据")
 		existsServerUser();
 	}
 }
@@ -55,8 +55,7 @@ function existsServerUser(){
  * cordova加载完成
  */
 function onDeviceReady(){
-	alert(device.uuid);
-	
+	alert("cordova加载完成")
 	var userObj = {
 		userName:"name",
 		userPassword:"password",
@@ -64,19 +63,23 @@ function onDeviceReady(){
 		userUuid:device.uuid+device.cordova+device.model+device.manufacturer
 	};
 	
-	alert(device.uuid);
 	localStorage.setItem("userObj",JSON.stringify(userObj));
 	
+	
 	$.ajax({
-		type:"post",
-		url:"http://127.0.0.1:8088/PhoneUser/phoneUserCK",
+		url:ajaxUrl.getUserCKUrl,
 		async:true,
 		data:userObj,
 		success:function(data){
-			alert(data);
+			if(data.result == "SUCCESS"){
+				console.log("用户信息添加远程数据库成功")
+			}else{
+				console.log("用户信息添加远程数据库失败")
+				console.log("失败原因"+data.log);
+			}
 		},
 		error:function(){
-			alert("发送失败");
+			console.log("添加远程数据库失败")
 		}
 	});
 
@@ -92,6 +95,9 @@ function init(){
 	document.getElementById("btn1").addEventListener("tap",function(){
 		mui('.mui-off-canvas-wrap').offCanvas().toggle();
 	});
+	document.getElementById("btn2").addEventListener("tap",function(){
+		
+	});
 	document.getElementById("btnLogin").addEventListener("tap",function(){
 		mui.openWindow({
 			url:"login.html",
@@ -101,3 +107,5 @@ function init(){
 		})
 	});
 }
+
+

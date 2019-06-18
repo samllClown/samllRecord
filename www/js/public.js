@@ -1,10 +1,8 @@
-var basePublicUrl = "http://211.99.9.81:10180/esCloudApp/app/"; //公共的路径 陆
-//var basePublicUrl = "http://192.168.100.56:8080/esCloudApp/app/";
-//var basePublicUrl = "http://192.168.100.59:8080/jeesite/app/";
-var getUserInfo = localStorage.getItem("userInfo");//从缓存中获取数据
-//var Autologon = localStorage.getItem("AutologonBool");
-if(getUserInfo){
-	getUserInfo = JSON.parse(getUserInfo);//字符串转成对象
+var basePublicUrl = "http://192.168.1.101:8088";//服务器地址端口
+var basePublicUserUrl = basePublicUrl+"/PhoneUser";//用户操作接口
+var ajaxUrl = {
+	getUserLoginUrl:basePublicUserUrl+"/phoneLogin",
+	getUserCKUrl:basePublicUserUrl+"/phoneUserCK"
 }
 
 function networkRequestErr(data, textStatus) {

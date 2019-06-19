@@ -4,12 +4,70 @@
     <meta charset="UTF-8" />
     <title>Document</title>
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-    <link rel="stylesheet" type="text/css" href="css/mui.min.css"/>
     <script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/public.js" type="text/javascript" charset="UTF-8"></script>
+    <link rel="stylesheet" type="text/css" href="css/mui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/muiModule/mui.picker.css"/>
+    <link rel="stylesheet" type="text/css" href="css/muiModule/mui.picker.min.css" />
+    <script src="cordova.js"></script>
+    <script src="js/muiModule/mui.picker.min.js"></script>
     <script src="js/jquery-2.1.1.js"></script>
-    <script type="text/javascript">
-    	mui.init()
+    
+    <style type="text/css">
+    	input{
+    		background-color: transparent;
+    		border: 0;
+    	}
+    </style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">ADD</h1>
+	    <a class="mui-icon mui-icon-plusempty mui-pull-right"></a>
+	</header>
+	<div class="mui-content">
+	    <ul class="mui-table-view">
+	        <li class="mui-table-view-cell mui-collapse">
+	            <a class="mui-navigate-right" href="#">WorkTimeShow{{ID}}</a>
+	            <div class="mui-collapse-content">
+	            	<input type="text" placeholder="The event theme" value="{{THE EVENT THEME}}" />
+	                <textarea placeholder="The event in detail">{{THE EVENT IN DETAIL}}</textarea>
+	                <div class="mui-button-row">
+	                	<label class="eventTimeLaber">The event time : </label>
+	                	<button class="timeBtn" id="btnClick" type="button" onclick="timeBtnClick(this)" class="mui-btn mui-btn-outlined">{{THE EVENT TIME}}</button>
+	                	<button class="removeBtn" type="button" onclick="removeOne(this)" class="mui-btn mui-btn-danger mui-btn-outlined">remove</button>
+	                </div>
+	            </div>
+	        </li>
+	    </ul>
+	</div>
+</body>
+<script type="text/javascript">
+    	mui.init({
+    		swipeBack:true,
+    		beforeback:function(obj){
+    		}
+    	});
+    	
+    	function plusReady(){
+    		mui.plusReady(){
+    			alert("!!!")
+    			var url = plus.webview.currentWebview().getURL();
+    			alert(url)
+    		}
+    	}
+    	
+    	if(window.plus){
+    		plusReady();
+    	}else{
+    		document.addEventListener("plusready",plusReady,false);
+    	}
+    	
+    	var dtPicker = new mui.DtPicker(); 
+    	
     	$(function(){
+    		
     		$("input").css("border","0");
     		$("input").css("padding","0");
     		$("input").css("border-bottom","1px solid rgba(0,0,0,0.2)");
@@ -23,34 +81,55 @@
     		$(".mui-button-row").css("color","rgba(0,0,0,0.5)");
     		var rowWidth = $(".mui-collapse-content").width();
     		$(".timeBtn").css("width",rowWidth/2+"px");
+    		$(".removeBtn").css("width","100%");
+    		$(".removeBtn").css("margin-top","15px");
+    		
+		    var li = $("li[class~='mui-table-view-cell']");
+	    	var liStr = li[0].innerHTML;
+	    	li[0].remove();
+		    
+		    $(".mui-icon-plusempty").on("tap",function(){
+		    	
+		    	var ul = $("ul[class='mui-table-view']");
+		    	var size = ul.children("li").length;
+		    	var myArray = new Array(3);
+	    		var newLi = "<li class='mui-table-view-cell mui-collapse'>";
+	    		newLi += liStr.replace(/{{ID}}/g,++size == 0 ? "":size)
+	    						.replace(/{{THE EVENT THEME}}/g,"")
+	    						.replace(/{{THE EVENT IN DETAIL}}/g,"")
+	    						.replace(/{{THE EVENT TIME}}/g,"click");
+	    		newLi += "</li>"
+	    		
+	    		ul.prepend(newLi);
+	    		newLi = "";
+		    })
     	})
-    </script>
-    <style type="text/css">
-    	input{
-    		background-color: transparent;
-    		border: 0;
+    	
+    	function timeBtnClick(obj){
+    		if($(obj).html()=='click'){
+	    		var datetime = dateFtt("yyyy-MM-dd hh:mm",new Date());
+		    	dtPicker.setSelectedValue(datetime);
+	    	}else{
+	    		dtPicker.setSelectedValue($(obj).html());
+	    	}
+	    	
+	    	dtPicker.show(function(selectItems){
+	    		
+	    		console.log(datetime);
+	    		
+	    		$(obj).html(selectItems.value);
+	    		
+	    	})
     	}
-    </style>
-</head>
-<body>
-	<header class="mui-bar mui-bar-nav">
-	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-	    <h1 class="mui-title">ADD</h1>
-	</header>
-	<div class="mui-content">
-	    <ul class="mui-table-view">
-	        <li class="mui-table-view-cell mui-collapse">
-	            <a class="mui-navigate-right" href="#">WorkTimeShow</a>
-	            <div class="mui-collapse-content">
-	            	<input type="text" placeholder="The event theme" />
-	                <textarea placeholder="The event in detail"></textarea>
-	                <div class="mui-button-row">
-	                	<label class="eventTimeLaber">The event time : </label>
-	                	<button class="timeBtn" type="button" class="mui-btn mui-btn-outlined">click</button>
-	                </div>
-	            </div>
-	        </li>
-	    </ul>
-	</div>
-</body>
+    	
+    	function removeOne(obj){
+    		var thisLi = $(obj).parent().parent().parent();
+    		thisLi.remove();
+    	}
+    	
+    	function saveList(){
+    		console.log("!!!");
+    		alert("!!!!");
+    	}
+    </script>
 </html>

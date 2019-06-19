@@ -96,7 +96,7 @@ function init(){
 	document.getElementById("btn2").addEventListener("tap",function(){
 		mui.openWindow({
 			url:"dailyRecord.html",
-			
+			id:"myDaily"
 		})
 	});
 	document.getElementById("btnLogin").addEventListener("tap",function(){

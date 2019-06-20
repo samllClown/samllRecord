@@ -144,44 +144,5 @@
 		    </div>  
 		  </div>
 		</div>
-		<script>
-			(function($, doc) {
-				$.init();
-				var settings = app.getSettings();
-				var account = doc.getElementById('account');
-				//s
-				window.addEventListener('show', function() {
-					var state = app.getState();
-					account.innerText = state.account;
-				}, false);
-				$.plusReady(function() {
-					console.log(plus.webview.currentWebview().name);
-					var settingPage = $.preload({
-						"id": 'setting',
-						"url": 'setting.html'
-					});
-					//设置
-					var settingButton = doc.getElementById('setting');
-					//--
-					$.oldBack = mui.back;
-					var backButtonPress = 0;
-					$.back = function(event) {
-						backButtonPress++;
-						if (backButtonPress > 1) {
-							plus.runtime.quit();
-						} else {
-							plus.nativeUI.toast('再按一次退出应用');
-						}
-						setTimeout(function() {
-							backButtonPress = 0;
-						}, 1000);
-						return false;
-					};
-				     
-				});
-				
-			}(mui, document));
-			
-		</script>
 </body>
 </html>

@@ -9,14 +9,12 @@
     <link rel="stylesheet" type="text/css" href="css/mui.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/muiModule/mui.picker.css"/>
     <link rel="stylesheet" type="text/css" href="css/muiModule/mui.picker.min.css" />
-    <script src="cordova.js"></script>
     <script src="js/muiModule/mui.picker.min.js"></script>
     <script src="js/jquery-2.1.1.js"></script>
     
     <style type="text/css">
     	input{
     		background-color: transparent;
-    		border: 0;
     	}
     </style>
 </head>
@@ -29,9 +27,11 @@
 	<div class="mui-content">
 	    <ul class="mui-table-view">
 	        <li class="mui-table-view-cell mui-collapse">
-	            <a class="mui-navigate-right" href="#">WorkTimeShow{{ID}}</a>
+	            <a class="mui-navigate-right" href="#">WorkTimeShow
+	            	<input value="" class="dailyTitle" readonly="readonly" id="{{ID}}"/></a>
+	            
 	            <div class="mui-collapse-content">
-	            	<input type="text" placeholder="The event theme" value="{{THE EVENT THEME}}" />
+	            	<input id="theme" oninput="inputText(this)" type="text" placeholder="The event theme" value="{{THE EVENT THEME}}" />
 	                <textarea placeholder="The event in detail">{{THE EVENT IN DETAIL}}</textarea>
 	                <div class="mui-button-row">
 	                	<label class="eventTimeLaber">The event time : </label>
@@ -39,7 +39,7 @@
 	                	<button class="removeBtn" type="button" onclick="removeOne(this)" class="mui-btn mui-btn-danger mui-btn-outlined">remove</button>
 	                </div>
 	            </div>
-	        </li>
+	        </li> 
 	    </ul>
 	</div>
 </body>
@@ -47,22 +47,45 @@
     	mui.init({
     		swipeBack:true,
     		beforeback:function(obj){
+    			
+    			var liList = $("li[class~='mui-table-view-cell']");
+    			
+    			var myDaily = [];
+    			
+    			liList.each(function(){
+    				 var id = $(this).children("a").text();
+    				 var theEventTheme = $(this).children(".mui-collapse-content").children("input").val();
+    				 var theEventInDetail = $(this).children(".mui-collapse-content").children("textarea").val();
+    				 var theEventTimeval = $(this).children(".mui-collapse-content").children(".mui-button-row").children(".timeBtn").text	();
+    				 theEventTimeval = theEventTimeval == "click" ? "":theEventTimeval ;
+    				 
+    				var ListUtils = {
+	    					"workId":id,
+	    					"workTheme":theEventTheme,
+	    					"workDetail":theEventInDetail,
+	    					"workTime":theEventTimeval
+	    				}
+    				
+    				myDaily.push(ListUtils);
+    			})
+    			
+    			/*
+    			 * 网络保存
+    			 */
+    			var dailyRecord = {};
+//	   			dailyRecord.uuid = window.localStorage.getItem("userObj").userUuid==""?"":window.localStorage.getItem("userObj").userUuid;
+    			dailyRecord.dailyList = myDaily;
+    			dailyRecord.uuid = "123";
+    			
+//  			$.ajax({
+//  				url:ajaxUrl.getDailyTest,
+//  				data:{"dailyRecord":JSON.stringify(dailyRecord)},
+//  				dataType:"JSON",
+//  				type:"POST",
+//  				async:true
+//  			});
     		}
     	});
-    	
-    	function plusReady(){
-    		mui.plusReady(){
-    			alert("!!!")
-    			var url = plus.webview.currentWebview().getURL();
-    			alert(url)
-    		}
-    	}
-    	
-    	if(window.plus){
-    		plusReady();
-    	}else{
-    		document.addEventListener("plusready",plusReady,false);
-    	}
     	
     	var dtPicker = new mui.DtPicker(); 
     	
@@ -71,6 +94,11 @@
     		$("input").css("border","0");
     		$("input").css("padding","0");
     		$("input").css("border-bottom","1px solid rgba(0,0,0,0.2)");
+    		
+    		$(".dailyTitle").css("border-bottom","0");
+    		$(".dailyTitle").css("text-align","center");
+    		$(".dailyTitle").css("color","rgba(0,0,0,0.5)");
+    		
     		$("textarea").css("border","0");
     		$("textarea").css("padding","0");
     		$("textarea").css("border-bottom","1px solid rgba(0,0,0,0.2)");
@@ -105,6 +133,11 @@
 		    })
     	})
     	
+    	function inputText(obj){
+    		var inputDOM = $(obj).parent().parent().children("a").children("input");
+    		$(inputDOM).val($(obj).val());
+    	}
+    	 
     	function timeBtnClick(obj){
     		if($(obj).html()=='click'){
 	    		var datetime = dateFtt("yyyy-MM-dd hh:mm",new Date());
@@ -115,8 +148,6 @@
 	    	
 	    	dtPicker.show(function(selectItems){
 	    		
-	    		console.log(datetime);
-	    		
 	    		$(obj).html(selectItems.value);
 	    		
 	    	})
@@ -124,12 +155,15 @@
     	
     	function removeOne(obj){
     		var thisLi = $(obj).parent().parent().parent();
-    		thisLi.remove();
-    	}
-    	
-    	function saveList(){
-    		console.log("!!!");
-    		alert("!!!!");
+    		mui.confirm("确认删除当前记录?","删除提示","是否",function(e){
+    			if (e.index == 0) {
+                        thisLi.remove();
+                    } else {
+                        
+                    }
+    				
+    		})
+    		
     	}
     </script>
 </html>

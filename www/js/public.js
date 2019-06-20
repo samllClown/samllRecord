@@ -1,8 +1,11 @@
-var basePublicUrl = "http://192.168.1.101:8088";//服务器地址端口
+var basePublicUrl = "http://192.168.42.218:8088";//服务器地址端口
 var basePublicUserUrl = basePublicUrl+"/PhoneUser";//用户操作接口
+var basePublicDailyUrl = basePublicUrl+"/PhoneDaily";//记录安排操作接口
+
 var ajaxUrl = {
 	getUserLoginUrl:basePublicUserUrl+"/phoneLogin",
-	getUserCKUrl:basePublicUserUrl+"/phoneUserCK"
+	getUserCKUrl:basePublicUserUrl+"/phoneUserCK",
+	getDailyTest:basePublicDailyUrl+"/phoneDailyTest"
 }
 
 function networkRequestErr(data, textStatus) {
@@ -11,7 +14,7 @@ function networkRequestErr(data, textStatus) {
 }
 
 
-function GetRequest() { //获取URL中的参数
+function GetRequest() { //获取URL中的参数s
 	var url = location.search; //获取url中"?"符后的字串
 	var theRequest = new Object();
 	if(url.indexOf("=") != -1) {

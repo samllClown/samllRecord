@@ -20,9 +20,7 @@ function existsUser(user){
 	if(user){
 		//若缓存中有数据时 直接获取
 		var userObj = user;
-		alert("缓存中有用户数据")
 	}else{
-		alert("缓存中无用户数据")
 		existsServerUser();
 	}
 }
@@ -55,7 +53,6 @@ function existsServerUser(){
  * cordova加载完成
  */
 function onDeviceReady(){
-	alert("cordova加载完成")
 	var userObj = {
 		userName:"name",
 		userPassword:"password",
@@ -70,6 +67,7 @@ function onDeviceReady(){
 		url:ajaxUrl.getUserCKUrl,
 		async:true,
 		data:userObj,
+		dataType:"JSON",
 		success:function(data){
 			if(data.result == "SUCCESS"){
 				console.log("用户信息添加远程数据库成功")
@@ -96,7 +94,10 @@ function init(){
 		mui('.mui-off-canvas-wrap').offCanvas().toggle();
 	});
 	document.getElementById("btn2").addEventListener("tap",function(){
-		
+		mui.openWindow({
+			url:"dailyRecord.html",
+			id:"myDaily"
+		})
 	});
 	document.getElementById("btnLogin").addEventListener("tap",function(){
 		mui.openWindow({

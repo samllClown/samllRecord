@@ -40,19 +40,28 @@ function phoneUserLogin(customerInfo){
 	$.ajax({
 		url:ajaxUrl.getUserLoginUrl,
 		async:true,
-		data:{"username":customerInfo.phoneNo,"password":passwordKey},
+		data:{"userName":customerInfo.phoneNo,"userPassword":passwordKey},
+		dataType:"JSON",
 		success:function(data){
-			console.log(data);
+			console.log(data.result);
+			if(data.RESULT=="SUCCESS"){
+				var loginObjec = mui.openWindow({
+					url:"main.html",
+					extras:{
+						name:"tom"
+					}
+				})
+			}
+			
+			
+		},
+		error:function(){
+			alert("网络异常");
 		}
 	});
 	
 	
-	var loginObjec = mui.openWindow({
-		url:"main.html",
-		extras:{
-			name:"tom"
-		}
-	})
+	
 			
 	
 	

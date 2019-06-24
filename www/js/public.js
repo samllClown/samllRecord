@@ -1,4 +1,4 @@
-var basePublicUrl = "http://192.168.42.218:8088";//服务器地址端口
+var basePublicUrl = "http://192.168.1.100:8088";//服务器地址端口
 var basePublicUserUrl = basePublicUrl+"/PhoneUser";//用户操作接口
 var basePublicDailyUrl = basePublicUrl+"/PhoneDaily";//记录安排操作接口
 

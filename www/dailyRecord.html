@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
     <script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/public.js" type="text/javascript" charset="UTF-8"></script>
+    
     <link rel="stylesheet" type="text/css" href="css/mui.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/muiModule/mui.picker.css"/>
     <link rel="stylesheet" type="text/css" href="css/muiModule/mui.picker.min.css" />
+
     <script src="js/muiModule/mui.picker.min.js"></script>
     <script src="js/jquery-2.1.1.js"></script>
     
@@ -21,7 +23,14 @@
 			text-overflow:ellipsis;
 			white-space: nowrap
     	}
+    	.mui-button-row{
+    		display: inline-block;
+    	}
+    	.mui-button-row label{
+    		width: auto;
+    	}
     </style>
+    
 </head>
 <body>
 	<header class="mui-bar mui-bar-nav">
@@ -32,17 +41,21 @@
 	<div class="mui-content">
 	    <ul class="mui-table-view">
 	        <li class="mui-table-view-cell mui-collapse">
-	            <a class="mui-navigate-right" href="#"><span class="titleSpan">WorkTimeShow</span>
+	            <a class="mui-navigate-right workTimeShow" href="#" id="{{gradeValue}}" style="color: {{gradeColor}};"><span class="titleSpan">WorkTimeShow</span>
 	            	<input class="dailyTitle" readonly="readonly" value="{{THE EVENT THEME}}" id="{{ID}}"/></a>
 	            
-	            <div class="mui-collapse-content">
+	            <div class="mui-collapse-content mui-input-row">
 	            	<input id="theme" oninput="inputText(this)" type="text" placeholder="The event theme" value="{{THE EVENT THEME}}" />
-	                <textarea placeholder="The event in detail">{{THE EVENT IN DETAIL}}</textarea>
+	                <textarea rows="5" placeholder="The event in detail">{{THE EVENT IN DETAIL}}</textarea>
 	                <div class="mui-button-row">
 	                	<label class="eventTimeLaber">The event time : </label>
-	                	<button class="timeBtn" id="btnClick" type="button" onclick="timeBtnClick(this)" class="mui-btn mui-btn-outlined">{{THE EVENT TIME}}</button>
-	                	<button class="removeBtn" type="button" onclick="removeOne(this)" class="mui-btn mui-btn-danger mui-btn-outlined">remove</button>
+	                	<button class="timeBtn" id="btnClick" type="button" onclick="timeBtnClick(this)" class="mui-btn mui-btn-outlined">{{THE EVENT TIME}}</button><br />
 	                </div>
+	                <div class="mui-button-row">
+	                	<label class="eventGradeLaber">The event grade : </label>
+	                	<button class="gradeBtn" style="border-color: {{gradeColor}};color: {{gradeColor}};" type="button" onclick="gradeBtnClick(this)" >{{gradeValue}}</button>
+	                </div>
+	                <button class="removeBtn" type="button" onclick="removeOne(this)" class="mui-btn mui-btn-danger mui-btn-outlined">remove</button>
 	            </div>
 	        </li> 
 	    </ul>
@@ -50,6 +63,8 @@
 </body>
 <script type="text/javascript">
     	var dtPicker = new mui.DtPicker(); 
+    	var grPicker = new mui.PopPicker();
+    	grPicker.setData([{color:"rgb(178, 34, 34)",text:"difficulty",value:"difficulty"},{color:"rgb(255,185,15)",text:"pending",value:"pending"},{color:"rgb(0, 102, 0)",text:"processed",value:"processed"}])
 //  	window.localStorage.removeItem("dailyAll");
     	var dailyAllJson = window.localStorage.getItem("dailyAll");
     	var dailyAllList = JSON.parse(dailyAllJson);
@@ -62,7 +77,7 @@
     		}
     	}
     	if(dailyRecord==""){
-    	 	dailyRecord = new DailyRecord(null,dailyGetTime,"TEST");
+    	 	dailyRecord = new DailyRecord(new Array(),dailyGetTime,"TEST");
     	}
     	
     	mui.plusReady(function(){
@@ -96,8 +111,23 @@
 	    	})
     	}
     	
+    	function gradeBtnClick(obj){
+    		grPicker.pickers[0].setSelectedValue($(obj).html());
+    		grPicker.show(function(selectItems){
+    			console.log(selectItems);
+    			$(obj).html(selectItems[0].value);
+    			var li = $(obj).parents("li")[0];
+    			var a = $(li).find(".workTimeShow")[0];
+    			
+    			$(a).css("color",selectItems[0].color);
+    			$(a).attr("id",selectItems[0].value);
+    			$(obj).css("border-color",selectItems[0].color);
+    			$(obj).css("color",selectItems[0].color);
+    		})
+    	}
+    	
     	function removeOne(obj){
-    		var thisLi = $(obj).parent().parent().parent();
+    		var thisLi = $(obj).parents("li")[0];
     		mui.confirm("确认删除当前记录?","删除提示","是否",function(e){
     			if (e.index == 0) {
                         thisLi.remove();
@@ -118,13 +148,16 @@
     			var myDaily = [];
     			
     			liList.each(function(){
-    				 var id = $(this).children("a").children(".dailyTitle").attr("id");
-    				 var theEventTheme = $(this).children(".mui-collapse-content").children("input").val();
-    				 var theEventInDetail = $(this).children(".mui-collapse-content").children("textarea").val();
-    				 var theEventTimeval = $(this).children(".mui-collapse-content").children(".mui-button-row").children(".timeBtn").text	();
+    				 var id = $(this).find(".dailyTitle").attr("id");
+    				 var theEventTheme = $(this).find("#theme").val();
+    				 var theEventInDetail = $(this).find("textarea").val();
+    				 var theEventTimeval = $(this).find(".timeBtn").text();
     				 theEventTimeval = theEventTimeval == "click" ? "":theEventTimeval ;
+    				 
+    				 var gradeValue = $(this).find(".workTimeShow").attr("id");
+    				 var gradeColor = $(this).find(".workTimeShow").css("color");
     				
-    				var dailyOne = new DailyOne(id,theEventTheme,theEventInDetail,theEventTimeval);
+    				var dailyOne = new DailyOne(id,theEventTheme,theEventInDetail,theEventTimeval,gradeValue,gradeColor);
     				
     				myDaily.push(dailyOne);
     			})
@@ -136,9 +169,85 @@
     	 * 初始化当前页面
     	 */
     	function initThisView(){
+    		
+    		
     		mui.init({
     		swipeBack:true,
     		beforeback:function(obj){
+    			blackSave(obj);
+    		}
+    	});
+    		
+    		$("input").css("border","0");
+    		$("input").css("padding","0");
+    		$("input").css("border-bottom","1px solid rgba(0,0,0,0.2)");
+    		$(".dailyTitle").css("border-bottom","0");
+    		$(".dailyTitle").css("text-align","center");
+    		$(".dailyTitle").css("color","rgba(0,0,0,0.5)");
+    		$("textarea").css("border","0");
+    		$("textarea").css("padding","0");
+    		$("textarea").css("border-bottom","1px solid rgba(0,0,0,0.2)");
+    		$("textarea").css("height","100px");
+    		$(".mui-button-row").css("text-align","left");
+    		$(".mui-button-row").css("width","100%");
+    		$(".mui-button-row").css("color","rgba(0,0,0,0.5)");
+    		var row = $(".mui-collapse-content");
+    		var rowWidth = row.width();
+    		var rowOffserWidth = $(".titleSpan").width();
+    		$(".dailyTitle").css("width",(rowWidth-rowOffserWidth)*0.7+"px");
+    		$(".removeBtn").css("width","100%");
+    		$(".removeBtn").css("margin-top","15px");
+    		
+    		//获取样式模型
+		    var li = $("li[class~='mui-table-view-cell']");
+	    	var liStr = li[0].innerHTML;
+	    	li[0].remove();
+	    	
+	    	//初始数据
+    		if(dailyRecord.dailyList.length!=0){
+    		
+    			var liList = dailyRecord.dailyList;
+    		
+	    		var ul = $("ul[class='mui-table-view']");
+	    		$(liList).each(function(e){
+	    			var newLi = "<li class='mui-table-view-cell mui-collapse'>";
+		    		newLi += liStr.replace(/{{ID}}/g, this.workId)
+		    						.replace(/{{THE EVENT THEME}}/g,this.workTheme)
+		    						.replace(/{{THE EVENT IN DETAIL}}/g,this.workDetail)
+		    						.replace(/{{THE EVENT TIME}}/g,this.workTime==""?"click":this.workTime)
+		    						.replace(/{{gradeValue}}/g,this.gradeValue)
+    								.replace(/{{gradeColor}}/g,this.gradeColor);
+		    		newLi += "</li>"
+		    		ul.append(newLi);
+	    		})
+    		};
+    		
+    		$(".dailyTitle").on("touchend",function(e){
+    			e.preventDefault();
+    		},false);
+    		
+    		
+		    var ul = $("ul[class='mui-table-view']");
+    		
+    		$(".mui-icon-plusempty").on("tap",function(){
+		    	
+	    		var newLi = "<li class='mui-table-view-cell mui-collapse'>";
+	    		var suijishu = ""+Math.round(Math.random()*1000);
+	    		newLi += liStr.replace(/{{gradeValue}}/g,"pending")
+	    						.replace(/{{gradeColor}}/g,grPicker.pickers[0].items[1].color)
+	    						.replace(/{{ID}}/g, dateFtt("yyyyMMddhhmmss",new Date())+suijishu)
+	    						.replace(/{{THE EVENT THEME}}/g,"")
+	    						.replace(/{{THE EVENT IN DETAIL}}/g,"")
+	    						.replace(/{{THE EVENT TIME}}/g,"click");
+	    		newLi += "</li>"
+	    		
+	    		ul.prepend(newLi);
+	    		newLi = "";
+		    })
+    		
+    	}
+    	
+    	function blackSave(obj){
     			
     			//获取当前页面添加信息
     			var myDaily = getThisViewDailyList();
@@ -174,76 +283,6 @@
 //  				async:true
 //  			});
     		}
-    	});
-    		
-    		$("input").css("border","0");
-    		$("input").css("padding","0");
-    		$("input").css("border-bottom","1px solid rgba(0,0,0,0.2)");
-    		$(".dailyTitle").css("border-bottom","0");
-    		$(".dailyTitle").css("text-align","center");
-    		$(".dailyTitle").css("color","rgba(0,0,0,0.5)");
-    		$("textarea").css("border","0");
-    		$("textarea").css("padding","0");
-    		$("textarea").css("border-bottom","1px solid rgba(0,0,0,0.2)");
-    		$("textarea").css("height","100px");
-    		$(".timeBtn").css("margin-top","-5px");
-    		$(".mui-button-row").css("text-align","left");
-    		$(".mui-button-row").css("width","100%");
-    		$(".mui-button-row").css("color","rgba(0,0,0,0.5)");
-    		var row = $(".mui-collapse-content");
-    		var rowWidth = row.width();
-    		var rowOffserWidth = $(".titleSpan").width();
-    		$(".dailyTitle").css("width",(rowWidth-rowOffserWidth)*0.7+"px");
-    		$(".timeBtn").css("width",rowWidth/2+"px");
-    		$(".removeBtn").css("width","100%");
-    		$(".removeBtn").css("margin-top","15px");
-    		
-    		//获取样式模型
-		    var li = $("li[class~='mui-table-view-cell']");
-	    	var liStr = li[0].innerHTML;
-	    	li[0].remove();
-	    	
-	    	//初始数据
-    		if(dailyRecord.dailyList.length!=0){
-    		
-    			var liList = dailyRecord.dailyList;
-    		
-	    		var ul = $("ul[class='mui-table-view']");
-	    		$(liList).each(function(e){
-	    			var newLi = "<li class='mui-table-view-cell mui-collapse'>";
-		    		newLi += liStr.replace(/{{ID}}/g, this.workId)
-		    						.replace(/{{THE EVENT THEME}}/g,this.workTheme)
-		    						.replace(/{{THE EVENT IN DETAIL}}/g,this.workDetail)
-		    						.replace(/{{THE EVENT TIME}}/g,this.workTime==""?"click":this.workTime);
-		    		newLi += "</li>"
-		    		ul.append(newLi);
-	    		})
-    		};
-    		
-    		$(".dailyTitle").on("touchend",function(e){
-    			e.preventDefault();
-    		},false);
-    		
-    		
-		    var ul = $("ul[class='mui-table-view']");
-    		
-    		$(".mui-icon-plusempty").on("tap",function(){
-		    	
-	    		var newLi = "<li class='mui-table-view-cell mui-collapse'>";
-	    		var suijishu = ""+Math.round(Math.random()*1000);
-	    		newLi += liStr.replace(/{{ID}}/g, dateFtt("yyyyMMddhhmmss",new Date())+suijishu)
-	    						.replace(/{{THE EVENT THEME}}/g,"")
-	    						.replace(/{{THE EVENT IN DETAIL}}/g,"")
-	    						.replace(/{{THE EVENT TIME}}/g,"click");
-	    		newLi += "</li>"
-	    		
-	    		ul.prepend(newLi);
-	    		newLi = "";
-		    })
-    		
-    	}
-    	
-    	
     	
     	
     	

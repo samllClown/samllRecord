@@ -16,12 +16,20 @@
 		.more{
 			width: 100%;
 			height: 100%;
+			margin-top: 1vw;
 			
-		}]
+		}
 		.mui-card-footer{
 			padding-bottom: 5px;
 			padding-left: 3px;
 			padding-right: 3px;
+		}
+		.dailyOneList{
+			margin: 0;	
+			min-height: 42vw;
+		}
+		.dailyOne{
+			border-bottom: 1px solid #BBBBBB;
 		}
 	</style>
  
@@ -87,7 +95,10 @@
 					<!--内容区-->
 					<div class="mui-card-content">
 						
-						<img class="content-img" src="images/timg.jpg"/>
+						<!--<img class="content-img" src="images/timg.jpg"/>-->
+						<ul class="dailyOneList">
+								<li class="dailyOne" style="color: {{gradeColor}};">{{workTheme}}</li>
+						</ul>
 					
 					</div>
 					<!--页脚，放置补充信息或支持的操作-->
@@ -103,6 +114,7 @@
 		</div>
 </body>
 	<script>
+		
 		var dailyAllJson = window.localStorage.getItem("dailyAll");
 		var dailyAll = JSON.parse(dailyAllJson);
 		var dailyRecordList = "";
@@ -121,7 +133,6 @@
 		
 		
 		$(function(){
-			
 			/*
 			 * 页面初始话(画页面，添加点击事件)
 			 */
@@ -157,8 +168,8 @@
 			});
 
 			var dailyRecordCardStr = $(".dailyRecordCard:eq(0)").html();
+			var dailyOneStr = $(".dailyOneList").html().replace(/^\s+|\s+$/g,"");
 			$(".dailyRecordCard:eq(0)").remove();
-			
 			var muiBodyScrollStr = $(".mui-body-scroll");
 			
 			for (var i = 0; i <dailyRecordList.length; i++) {
@@ -166,10 +177,19 @@
 					var newCar = "<div class='mui-card dailyRecordCard'>";
 					newCar += dailyRecordCardStr.replace(/{{workTime}}/g,dailyRecordList[i].time);
 					newCar += "</div>";
+					
+					var newLi = "";
+					for (var j=0;j<dailyRecordList[i].dailyList.length;j++) {
+						newLi += dailyOneStr.replace(/{{gradeColor}}/g,dailyRecordList[i].dailyList[j].gradeColor).replace(/{{workTheme}}/g,dailyRecordList[i].dailyList[j].workTheme);
+					}
+					var newCarArray = newCar.split(dailyOneStr);
+					
+					newCar = newCarArray[0]+newLi+newCarArray[1];
 					muiBodyScrollStr.prepend(newCar);
+					var newCarArray = null;
 					newCar = "";
 				}
-			}
+			};
 			
 			$("#userLogBtn").on("tap",function(){
 				mui.alert("用户对象信息："+formatJson(localStorage.getItem("user")));
@@ -177,9 +197,9 @@
 			
 			$("#dailyRecordListLogBtn").on("tap",function(){
 				mui.alert("全体日志信息："+formatJson(window.localStorage.getItem("dailyAll")));
-			})
+			});
 			
-		})
+		});
 
 		function toDailyRecord(str){
 			

@@ -1,4 +1,4 @@
-var basePublicUrl = "http://192.168.42.218:8088";//服务器地址端口
+var basePublicUrl = "http://192.168.1.100:8088";//服务器地址端口
 var basePublicUserUrl = basePublicUrl+"/PhoneUser";//用户操作接口
 var basePublicDailyUrl = basePublicUrl+"/PhoneDaily";//记录安排操作接口
 
@@ -65,11 +65,13 @@ function dateFtt(fmt,date)
 }
 
 //设置单一事件对象
-function DailyOne(workId,workTheme,workDetail,workTime){
+function DailyOne(workId,workTheme,workDetail,workTime,gradeValue,gradeColor){
 	this.workId = workId;
 	this.workTheme = workTheme;
 	this.workDetail = workDetail;
 	this.workTime = workTime;
+	this.gradeValue = gradeValue;
+	this.gradeColor = gradeColor;
 }
 
 //设置事件对象
@@ -89,7 +91,7 @@ function DailyRecord(dailyList,time,uuid){
  function UserObj(userName,userPassword,userPhone,userUuid){
  	this.userName = userName;
  	this.userPassword = userPassword;
- 	this.userPhone = userPassword;
+ 	this.userPhone = userPhone;
  	this.userUuid = userUuid;
  }
 
@@ -99,11 +101,15 @@ function DailyRecord(dailyList,time,uuid){
  * 获取用户对象数据，若无则创建用户对象并存入数据
  */
 function getUserObj(){
+	
 	var user = window.localStorage.getItem("user");
 	user = user ? JSON.parse(user):"";
 	if(user){
 		//若缓存中有数据时 直接获取
 		testAlert("当前有用户对象："+JSON.stringify(user));
+		if(user.uuid==""){
+			
+		}
 	}else{
 		testAlert("当期无对象");
 	//	$.ajax({

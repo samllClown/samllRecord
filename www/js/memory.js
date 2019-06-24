@@ -1,8 +1,9 @@
 $(function(){
+	//画当前页面元素，设置点击事件
 	init();
+	//获取用户对象
 	getUserObj();
 })
-
 
 /**
  * 获取用户对象数据，若无则创建用户对象并存入数据
@@ -94,10 +95,15 @@ function init(){
 		mui('.mui-off-canvas-wrap').offCanvas().toggle();
 	});
 	document.getElementById("btn2").addEventListener("tap",function(){
-		mui.openWindow({
-			url:"dailyRecord.html",
-			id:"myDaily"
-		})
+		
+		var dateStr = dateFtt("yyyyMMdd",new Date());
+		window.localStorage.setItem("dailyGetTime",dateFtt("yyyyMMdd",new Date()));
+		
+		var mainView = mui.openWindow({
+						url:"dailyRecord.html",
+						id:"myDaily"
+					})
+		
 	});
 	document.getElementById("btnLogin").addEventListener("tap",function(){
 		mui.openWindow({

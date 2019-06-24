@@ -9,11 +9,21 @@
 		<link rel="stylesheet" href="css/main.css" />
 		<script src="js/jquery-2.1.1.js"></script>
 		<script src="js/mui.min.js"></script>
-		<script src="js/app.js"></script>
 		<script src="cordova.js"></script>
 		<script src="js/public.js"></script>
-		<script type="text/javascript" src="js/memory.js"></script>
 	</head>
+	<style type="text/css">
+		.more{
+			width: 100%;
+			height: 100%;
+			
+		}]
+		.mui-card-footer{
+			padding-bottom: 5px;
+			padding-left: 3px;
+			padding-right: 3px;
+		}
+	</style>
  
 	<body>
 		<!-- 侧滑导航根容器 -->
@@ -28,15 +38,15 @@
 		        </div>
 		        <div class="box">
 			        <ul class="mui-table-view">
-					    <li class="mui-table-view-cell mui-media">
-					        <a href="javascript:;">
-					            <span class="mui-icon mui-icon-home"></span>主页
-					        </a>
+			        	<li class="mui-table-view-cell mui-media">
+					    	<a id="main" href="javascript:;">
+					            <span class="mui-icon mui-icon-gear"></span>主页
+					    	</a>
 					    </li>
 					    <li class="mui-table-view-cell mui-media">
-					        <a href="javascript:;">
+					    	<a id="btnsetting" href="javascript:;">
 					            <span class="mui-icon mui-icon-gear"></span>设置
-					        </a>
+					    	</a>
 					    </li>
 					    <li class="mui-table-view-cell mui-media">
 					        <a id="btnLogin" href="javascript:;">
@@ -44,9 +54,11 @@
 					        </a>
 					    </li>
 					</ul>
+					
 		        </div>
-		        <div id="all">
-		        	
+		        <div id="All">
+			        <button id="userLogBtn" style="width: 100%;">点击查看用户对象信息</button>
+			      	<button id="dailyRecordListLogBtn" style="width: 100%;" >点击获取全体记录信息</button>
 		        </div>
 		      </div>
 		    </div>
@@ -60,16 +72,16 @@
 		      <a class="mui-icon mui-action-menu mui-icon-compose mui-pull-right " id="btn2"></a>
 		    </header>
 		    <div class="mui-content mui-scroll-wrapper">
-		      <div class="mui-scroll">
+		      <div class="mui-scroll mui-body-scroll">
 		        <!-- 主界面具体展示内容 -->
 		        
-		        <div class="mui-card">
+		        <div class="mui-card dailyRecordCard">
 					<!--页眉，放置标题-->
 					<div class="mui-card-header mui-card-media">
 						<img class="card-img" src="images/icon.png" />
 						<div class="mui-media-body">
-							标题
-							<p>发表于 日期</p>
+							Title
+							<p>be published in {{workTime}}</p>
 						</div>
 					</div>
 					<!--内容区-->
@@ -81,62 +93,7 @@
 					<!--页脚，放置补充信息或支持的操作-->
 					<div class="mui-card-footer">
 						<a class="footer-href-more" href="#">
-							<p>more</p>
-						</a>
-						<a class="footer-href-edit" href="#">
-							<p>edit</p>
-						</a>
-					</div>
-				</div>
-				
-				<div class="mui-card">
-					<!--页眉，放置标题-->
-					<div class="mui-card-header mui-card-media">
-						<img class="card-img" src="images/icon.png" />
-						<div class="mui-media-body">
-							标题
-							<p>发表于 日期</p>
-						</div>
-					</div>
-					<!--内容区-->
-					<div class="mui-card-content">
-						
-						<img class="content-img" src="images/timg.jpg"/>
-					
-					</div>
-					<!--页脚，放置补充信息或支持的操作-->
-					<div class="mui-card-footer">
-						<a class="footer-href-more" href="#">
-							<p>more</p>
-						</a>
-						<a class="footer-href-edit" href="#">
-							<p>edit</p>
-						</a>
-					</div>
-				</div>
-				
-				<div class="mui-card">
-					<!--页眉，放置标题-->
-					<div class="mui-card-header mui-card-media">
-						<img class="card-img" src="images/icon.png" />
-						<div class="mui-media-body">
-							标题
-							<p>发表于 日期</p>
-						</div>
-					</div>
-					<!--内容区-->
-					<div class="mui-card-content">
-						
-						<img class="content-img" src="images/timg.jpg"/>
-					
-					</div>
-					<!--页脚，放置补充信息或支持的操作-->
-					<div class="mui-card-footer">
-						<a class="footer-href-more" href="#">
-							<p>more</p>
-						</a>
-						<a class="footer-href-edit" href="#">
-							<p>edit</p>
+							<button class="more" onclick="toDailyRecord({{workTime}})" >details</button>
 						</a>
 					</div>
 				</div>
@@ -145,4 +102,97 @@
 		  </div>
 		</div>
 </body>
+	<script>
+		var dailyAllJson = window.localStorage.getItem("dailyAll");
+		var dailyAll = JSON.parse(dailyAllJson);
+		var dailyRecordList = "";
+		
+		if( !(dailyAllJson == null || dailyAllJson == "")){
+			testAlert("有全局对象数组"+JSON.stringify(dailyAll.dailyRecordList));
+			dailyRecordList = dailyAll.dailyRecordList;
+			
+		}else{
+			testAlert("无全局对象数组，现创建");
+			var dailyAllList = new DailyAllList();
+			dailyAllList.dailyRecordList = new Array();
+			window.localStorage.setItem("dailyAll",JSON.stringify(dailyAllList));
+			testAlert("dailyAll创建完成");
+		}
+		
+		
+		$(function(){
+			
+			/*
+			 * 页面初始话(画页面，添加点击事件)
+			 */
+			mui('.mui-scroll-wrapper').scroll({
+				deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+			});
+			$("#btn1").on("tap",function(){
+				mui('.mui-off-canvas-wrap').offCanvas().toggle();
+			});
+			
+			$("#btn2").on("tap",function(){
+				window.localStorage.setItem("dailyGetTime",dateFtt("yyyyMMdd",new Date()));
+				var mainView = mui.openWindow({
+								url:"dailyRecord.html",
+								id:"myDaily"
+						})
+			});
+			$("#btnsetting").on("tap",function(){
+				mui.openWindow({
+					url:"setting.html",
+					extras:{
+						name:"tom"
+					}
+				})
+			});
+			$("#btnLogin").on("tap",function(){
+				mui.openWindow({
+					url:"login.html",
+					extras:{
+						name:"tom"
+					}
+				})
+			});
+
+			var dailyRecordCardStr = $(".dailyRecordCard:eq(0)").html();
+			$(".dailyRecordCard:eq(0)").remove();
+			
+			var muiBodyScrollStr = $(".mui-body-scroll");
+			
+			for (var i = 0; i <dailyRecordList.length; i++) {
+				if(dailyRecordList[i].dailyList.length!=0){
+					var newCar = "<div class='mui-card dailyRecordCard'>";
+					newCar += dailyRecordCardStr.replace(/{{workTime}}/g,dailyRecordList[i].time);
+					newCar += "</div>";
+					muiBodyScrollStr.prepend(newCar);
+					newCar = "";
+				}
+			}
+			
+			$("#userLogBtn").on("tap",function(){
+				mui.alert("用户对象信息："+formatJson(localStorage.getItem("user")));
+			});
+			
+			$("#dailyRecordListLogBtn").on("tap",function(){
+				mui.alert("全体日志信息："+formatJson(window.localStorage.getItem("dailyAll")));
+			})
+			
+		})
+
+		function toDailyRecord(str){
+			
+			if(str=='this'){
+				str = 	dateFtt("yyyyMMdd",new Date());
+			}
+			window.localStorage.setItem("dailyGetTime",str);	
+			var mainView = mui.openWindow({
+							url:"dailyRecord.html",
+							id:"myDaily"
+			})
+			
+		}
+
+</script>
 </html>

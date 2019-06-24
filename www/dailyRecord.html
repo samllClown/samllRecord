@@ -16,6 +16,11 @@
     	input{
     		background-color: transparent;
     	}
+    	.dailyTitle{
+    		overflow: hidden;
+			text-overflow:ellipsis;
+			white-space: nowrap
+    	}
     </style>
 </head>
 <body>
@@ -27,8 +32,8 @@
 	<div class="mui-content">
 	    <ul class="mui-table-view">
 	        <li class="mui-table-view-cell mui-collapse">
-	            <a class="mui-navigate-right" href="#">WorkTimeShow
-	            	<input value="" class="dailyTitle" readonly="readonly" id="{{ID}}"/></a>
+	            <a class="mui-navigate-right" href="#"><span class="titleSpan">WorkTimeShow</span>
+	            	<input class="dailyTitle" readonly="readonly" value="{{THE EVENT THEME}}" id="{{ID}}"/></a>
 	            
 	            <div class="mui-collapse-content">
 	            	<input id="theme" oninput="inputText(this)" type="text" placeholder="The event theme" value="{{THE EVENT THEME}}" />
@@ -44,95 +49,33 @@
 	</div>
 </body>
 <script type="text/javascript">
-    	mui.init({
-    		swipeBack:true,
-    		beforeback:function(obj){
-    			
-    			var liList = $("li[class~='mui-table-view-cell']");
-    			
-    			var myDaily = [];
-    			
-    			liList.each(function(){
-    				 var id = $(this).children("a").text();
-    				 var theEventTheme = $(this).children(".mui-collapse-content").children("input").val();
-    				 var theEventInDetail = $(this).children(".mui-collapse-content").children("textarea").val();
-    				 var theEventTimeval = $(this).children(".mui-collapse-content").children(".mui-button-row").children(".timeBtn").text	();
-    				 theEventTimeval = theEventTimeval == "click" ? "":theEventTimeval ;
-    				 
-    				var ListUtils = {
-	    					"workId":id,
-	    					"workTheme":theEventTheme,
-	    					"workDetail":theEventInDetail,
-	    					"workTime":theEventTimeval
-	    				}
-    				
-    				myDaily.push(ListUtils);
-    			})
-    			
-    			/*
-    			 * 网络保存
-    			 */
-    			var dailyRecord = {};
-//	   			dailyRecord.uuid = window.localStorage.getItem("userObj").userUuid==""?"":window.localStorage.getItem("userObj").userUuid;
-    			dailyRecord.dailyList = myDaily;
-    			dailyRecord.uuid = "123";
-    			
-//  			$.ajax({
-//  				url:ajaxUrl.getDailyTest,
-//  				data:{"dailyRecord":JSON.stringify(dailyRecord)},
-//  				dataType:"JSON",
-//  				type:"POST",
-//  				async:true
-//  			});
-    		}
-    	});
-    	
     	var dtPicker = new mui.DtPicker(); 
+//  	window.localStorage.removeItem("dailyAll");
+    	var dailyAllJson = window.localStorage.getItem("dailyAll");
+    	var dailyAllList = JSON.parse(dailyAllJson);
+    	var dailyRecordList = dailyAllList.dailyRecordList;
+    	var dailyGetTime = window.localStorage.getItem("dailyGetTime");
+    	var dailyRecord = "";
+    	for (var i = 0; i < dailyRecordList.length; i++) {
+    		if(dailyRecordList[i].time == dailyGetTime){
+    			dailyRecord = dailyRecordList[i];
+    		}
+    	}
+    	if(dailyRecord==""){
+    	 	dailyRecord = new DailyRecord(null,dailyGetTime,"TEST");
+    	}
+    	
+    	mui.plusReady(function(){
+    		alert("!!!");
+    	});
     	
     	$(function(){
     		
-    		$("input").css("border","0");
-    		$("input").css("padding","0");
-    		$("input").css("border-bottom","1px solid rgba(0,0,0,0.2)");
-    		
-    		$(".dailyTitle").css("border-bottom","0");
-    		$(".dailyTitle").css("text-align","center");
-    		$(".dailyTitle").css("color","rgba(0,0,0,0.5)");
-    		
-    		$("textarea").css("border","0");
-    		$("textarea").css("padding","0");
-    		$("textarea").css("border-bottom","1px solid rgba(0,0,0,0.2)");
-    		$("textarea").css("height","100px");
-    		$(".timeBtn").css("margin-top","-5px");
-    		$(".mui-button-row").css("text-align","left");
-    		$(".mui-button-row").css("width","100%");
-    		$(".mui-button-row").css("color","rgba(0,0,0,0.5)");
-    		var rowWidth = $(".mui-collapse-content").width();
-    		$(".timeBtn").css("width",rowWidth/2+"px");
-    		$(".removeBtn").css("width","100%");
-    		$(".removeBtn").css("margin-top","15px");
-    		
-		    var li = $("li[class~='mui-table-view-cell']");
-	    	var liStr = li[0].innerHTML;
-	    	li[0].remove();
-		    
-		    $(".mui-icon-plusempty").on("tap",function(){
-		    	
-		    	var ul = $("ul[class='mui-table-view']");
-		    	var size = ul.children("li").length;
-		    	var myArray = new Array(3);
-	    		var newLi = "<li class='mui-table-view-cell mui-collapse'>";
-	    		newLi += liStr.replace(/{{ID}}/g,++size == 0 ? "":size)
-	    						.replace(/{{THE EVENT THEME}}/g,"")
-	    						.replace(/{{THE EVENT IN DETAIL}}/g,"")
-	    						.replace(/{{THE EVENT TIME}}/g,"click");
-	    		newLi += "</li>"
-	    		
-	    		ul.prepend(newLi);
-	    		newLi = "";
-		    })
+    		//初始化当前页面 并 添加点击事件
+    		initThisView();
     	})
     	
+// ===============================================
     	function inputText(obj){
     		var inputDOM = $(obj).parent().parent().children("a").children("input");
     		$(inputDOM).val($(obj).val());
@@ -165,5 +108,144 @@
     		})
     		
     	}
+    	
+    	/**
+    	 * 获取当前页面内已添加信息
+    	 */
+    	function getThisViewDailyList(){
+    		var liList = $("li[class~='mui-table-view-cell']");
+    			
+    			var myDaily = [];
+    			
+    			liList.each(function(){
+    				 var id = $(this).children("a").children(".dailyTitle").attr("id");
+    				 var theEventTheme = $(this).children(".mui-collapse-content").children("input").val();
+    				 var theEventInDetail = $(this).children(".mui-collapse-content").children("textarea").val();
+    				 var theEventTimeval = $(this).children(".mui-collapse-content").children(".mui-button-row").children(".timeBtn").text	();
+    				 theEventTimeval = theEventTimeval == "click" ? "":theEventTimeval ;
+    				
+    				var dailyOne = new DailyOne(id,theEventTheme,theEventInDetail,theEventTimeval);
+    				
+    				myDaily.push(dailyOne);
+    			})
+    			
+    		return myDaily;
+    	}
+    	
+    	/**
+    	 * 初始化当前页面
+    	 */
+    	function initThisView(){
+    		mui.init({
+    		swipeBack:true,
+    		beforeback:function(obj){
+    			
+    			//获取当前页面添加信息
+    			var myDaily = getThisViewDailyList();
+    			
+//	   			dailyRecord.uuid = window.localStorage.getItem("userObj").userUuid==""?"":window.localStorage.getItem("userObj").userUuid;
+    			dailyRecord.dailyList = myDaily;
+				
+					var blo = true;
+					if(dailyRecordList.length!=0){
+						for (var i = 0; i < dailyRecordList.length; i++) {
+							
+							if(dailyRecordList[i].time == dailyGetTime){
+								
+								dailyRecordList[i] = dailyRecord;
+								blo = false;
+							}
+						}
+					}
+					if(blo){
+						dailyAllList.dailyRecordList.push(dailyRecord);
+					}
+					window.localStorage.setItem("dailyAll",JSON.stringify(dailyAllList));
+				
+    			
+    			/*
+    			 * 网络保存
+    			 */
+//  			$.ajax({
+//  				url:ajaxUrl.getDailyTest,
+//  				data:{"dailyRecord":JSON.stringify(dailyRecord)},
+//  				dataType:"JSON",
+//  				type:"POST",
+//  				async:true
+//  			});
+    		}
+    	});
+    		
+    		$("input").css("border","0");
+    		$("input").css("padding","0");
+    		$("input").css("border-bottom","1px solid rgba(0,0,0,0.2)");
+    		$(".dailyTitle").css("border-bottom","0");
+    		$(".dailyTitle").css("text-align","center");
+    		$(".dailyTitle").css("color","rgba(0,0,0,0.5)");
+    		$("textarea").css("border","0");
+    		$("textarea").css("padding","0");
+    		$("textarea").css("border-bottom","1px solid rgba(0,0,0,0.2)");
+    		$("textarea").css("height","100px");
+    		$(".timeBtn").css("margin-top","-5px");
+    		$(".mui-button-row").css("text-align","left");
+    		$(".mui-button-row").css("width","100%");
+    		$(".mui-button-row").css("color","rgba(0,0,0,0.5)");
+    		var row = $(".mui-collapse-content");
+    		var rowWidth = row.width();
+    		var rowOffserWidth = $(".titleSpan").width();
+    		$(".dailyTitle").css("width",(rowWidth-rowOffserWidth)*0.7+"px");
+    		$(".timeBtn").css("width",rowWidth/2+"px");
+    		$(".removeBtn").css("width","100%");
+    		$(".removeBtn").css("margin-top","15px");
+    		
+    		//获取样式模型
+		    var li = $("li[class~='mui-table-view-cell']");
+	    	var liStr = li[0].innerHTML;
+	    	li[0].remove();
+	    	
+	    	//初始数据
+    		if(dailyRecord.dailyList.length!=0){
+    		
+    			var liList = dailyRecord.dailyList;
+    		
+	    		var ul = $("ul[class='mui-table-view']");
+	    		$(liList).each(function(e){
+	    			var newLi = "<li class='mui-table-view-cell mui-collapse'>";
+		    		newLi += liStr.replace(/{{ID}}/g, this.workId)
+		    						.replace(/{{THE EVENT THEME}}/g,this.workTheme)
+		    						.replace(/{{THE EVENT IN DETAIL}}/g,this.workDetail)
+		    						.replace(/{{THE EVENT TIME}}/g,this.workTime==""?"click":this.workTime);
+		    		newLi += "</li>"
+		    		ul.append(newLi);
+	    		})
+    		};
+    		
+    		$(".dailyTitle").on("touchend",function(e){
+    			e.preventDefault();
+    		},false);
+    		
+    		
+		    var ul = $("ul[class='mui-table-view']");
+    		
+    		$(".mui-icon-plusempty").on("tap",function(){
+		    	
+	    		var newLi = "<li class='mui-table-view-cell mui-collapse'>";
+	    		var suijishu = ""+Math.round(Math.random()*1000);
+	    		newLi += liStr.replace(/{{ID}}/g, dateFtt("yyyyMMddhhmmss",new Date())+suijishu)
+	    						.replace(/{{THE EVENT THEME}}/g,"")
+	    						.replace(/{{THE EVENT IN DETAIL}}/g,"")
+	    						.replace(/{{THE EVENT TIME}}/g,"click");
+	    		newLi += "</li>"
+	    		
+	    		ul.prepend(newLi);
+	    		newLi = "";
+		    })
+    		
+    	}
+    	
+    	
+    	
+    	
+    	
     </script>
 </html>
